@@ -166,16 +166,16 @@ export class CommandCategory {
     }
 }
 
-export function createCommand(opts: {
+export function createCommand(
     meta: CommandMeta,
     exec: CommandExec,
     cooldown?: number,
-    ownerOnly?: boolean
-}): Command {
+    ownerOnly?: boolean): 
+Command {
     return {
-        meta: opts.meta,
-        exec: opts.exec,
-        cooldown: opts.cooldown,
-        ownerOnly: opts.ownerOnly
+        meta,
+        exec,
+        cooldown,
+        ownerOnly
     }
 }
