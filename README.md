@@ -28,7 +28,7 @@ const djsClient = new Client({
 })
 
 const client = new CommandClient({
-    client: djsClient,
+    discordClient: djsClient,
     clientToken: process.env.TOKEN,
     localGuildId: "961227373649461248",
     ownerUserIds: ["544646066579046401"]
