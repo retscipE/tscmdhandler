@@ -1,6 +1,8 @@
 # tscmdhandler
 Credit to Nobu#1122 on Discord for creating the original handler this is based off of
+
 [His Website](https://nobu.sh)
+
 
 A command handler for Discord.JS made from Typescript.
 ```bash
