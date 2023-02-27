@@ -88,7 +88,7 @@ export class CommandClient {
      * @param categories 
      * @param global 
      */
-    public async registerCategories(categories: CommandCategory[], global: boolean): Promise<CommandCategory[]> {
+    public async registerCategories(categories: CommandCategory[], global: "true" | "false"): Promise<CommandCategory[]> {
         const body = categories.map(({ commands }) => {
             commands.map(({ meta }) => meta)
         }).flat();
@@ -99,7 +99,7 @@ export class CommandClient {
         (async () => {
             const currentUser = await rest.get(Routes.user()) as APIUser
 
-            const endpoint = global === true
+            const endpoint = global === "true"
                 ? Routes.applicationCommands(currentUser.id)
                 : Routes.applicationGuildCommands(currentUser.id, this.#localGuildId)
 
@@ -111,7 +111,7 @@ export class CommandClient {
             return currentUser
         })()
         .then((user) => {
-            const response = global === true
+            const response = global === "true"
                 ? `Successfully registered commands and categories globally with ${user.username}#${user.discriminator} (${user.id})`
                 : `Successfully registered commands and categories locally with ${user.username}#${user.discriminator} (${user.id}) in guild: ${this.#localGuildId}`
 
@@ -148,11 +148,7 @@ export class CommandCategory {
     }
 
     public addCommand(command: Command) : CommandCategory {
-        try {
-            this.#commands.push(command);
-        } catch (e) {
-            console.error(e)
-        }
+        this.#commands.push(command);
 
         return this;
     }
