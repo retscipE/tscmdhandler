@@ -8,7 +8,7 @@ export class CommandClient {
     #localGuildId: string;
     #ownerUserIds: string[];
     #cooldown = new Collection<string, number>();
-    #commandsMap = new Map<string, Command>();
+    #commands: Command[] = [];
     
     constructor(options: {
         discordClient: Client,
@@ -35,7 +35,7 @@ export class CommandClient {
 
             try {
                 const cmdName = interaction.commandName;
-                const command = this.#commandsMap.get(cmdName);
+                const command = this.#commands.find((cmd) => cmd.meta.name === cmdName);
 
                 if (!command) throw new Error("Command not found.")
 
@@ -92,10 +92,7 @@ export class CommandClient {
         const body = categories.map(({ commands }) => {
             commands.map(({ meta }) => meta)
         }).flat();
-        const allCommands = categories.map(({ commands }) => commands).flat();
-        this.#commandsMap = new Map<string, Command>(
-            allCommands.map((c) => [c.meta.name, c])
-        )
+        this.#commands = categories.map(({ commands }) => commands).flat();
 
         const rest = new REST({ version: '10' }).setToken(this.#clientToken);
 
