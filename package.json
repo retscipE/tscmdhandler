@@ -1,6 +1,6 @@
 {
   "name": "tscmdhandler",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "A command handler for Discord.JS made from Typescript.",
   "main": "dist/index.js",
   "scripts": {
