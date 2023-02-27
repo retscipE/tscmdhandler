@@ -150,19 +150,14 @@ export class CommandCategory {
         return this.#commands
     }
 
-    public addCommand(command: Command) : Command {
+    public addCommand(command: Command) : CommandCategory {
         try {
             this.#commands.push(command);
         } catch (e) {
             console.error(e)
         }
 
-        return {
-            meta: command.meta,
-            exec: command.exec,
-            cooldown: command.cooldown,
-            ownerOnly: command.ownerOnly
-        }
+        return this;
     }
 }
 
