@@ -1,4 +1,4 @@
-# tscmdhandler
+# tshandler
 Credit to Nobu#1122 on Discord for creating the original handler this is based off of
 
 [His Website](https://nobu.sh)
@@ -6,17 +6,17 @@ Credit to Nobu#1122 on Discord for creating the original handler this is based o
 
 A command handler for Discord.JS made from Typescript.
 ```bash
-npm install tscmdhandler
+npm install tshandler
 ```
 
-### To start using the handler, make your main bot file and import from Discord.JS and TSCmdHandler (I will show a Typescript example but you should be able to use Javascript as well)
+### To start using the handler, make your main bot file and import from Discord.JS and TSHandler (I will show a Typescript example but you should be able to use Javascript as well)
 ```typescript
 // ./index.ts
 import { config } from "dotenv";
 import { resolve } from "path";
 config({ path: resolve(__dirname, "..", ".env") });
 
-import { CommandClient } from 'tscmdhandler'
+import { CommandClient } from 'tshandler'
 import { Client } from 'discord.js'
 import categories from './commands'
 
@@ -47,7 +47,7 @@ export default [
 ]
 
 // ./commands/utility/index.ts
-import { CommandCategory } from 'tscmdhandler'
+import { CommandCategory } from 'tshandler'
 
 import ping from './ping'
 import test from './test'
@@ -64,7 +64,7 @@ utility
 export default utility
 
 // ./commands/utility/ping.ts
-import { createCommand } from 'tscmdhandler'
+import { createCommand } from 'tshandler'
 import { SlashCommandBuilder } from 'discord.js'
 
 const meta = new SlashCommandBuilder()
@@ -76,7 +76,7 @@ export default createCommand(meta, ({ interaction, client }) => {
 })
 
 // ./commands/utility/test.ts
-import { createCommand } from 'tscmdhandler'
+import { createCommand } from 'tshandler'
 import { SlashCommandBuilder } from 'discord.js'
 
 const meta = new SlashCommandBuilder()
