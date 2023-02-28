@@ -80,8 +80,8 @@ import { createCommand } from 'tshandler'
 import { SlashCommandBuilder } from 'discord.js'
 
 const meta = new SlashCommandBuilder()
-    .setName('ping')
-    .setDescription('Replies with Pong!')
+    .setName('test')
+    .setDescription('Responds if it works or not.')
 
 export default createCommand(meta, ({ interaction, client }) => {
     interaction.reply({ content: `It works!` })
