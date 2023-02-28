@@ -103,8 +103,8 @@ export class CommandClient {
                 ? Routes.applicationCommands(currentUser.id)
                 : Routes.applicationGuildCommands(currentUser.id, this.#localGuildId)
 
-            await rest.put(endpoint, { body: [] })
-                .catch(console.error);
+            // await rest.put(endpoint, { body: [] })
+            //     .catch(console.error);
 
             await rest.put(endpoint, { body })
 
