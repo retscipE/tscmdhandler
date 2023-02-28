@@ -89,10 +89,10 @@ export class CommandClient {
      * @param global 
      */
     public async registerCategories(categories: CommandCategory[], global: "true" | "false"): Promise<CommandCategory[]> {
-        const body = categories.map(({ commands }) => {
-            commands.map(({ meta }) => meta)
-        }).flat();
-        this.#commands = categories.map(({ commands }) => commands).flat();
+        const mappedCommands = categories.map(({ commands }) => commands).flat();
+        const body = mappedCommands.map((c) => c.meta);
+
+        this.#commands = mappedCommands
 
         const rest = new REST({ version: '10' }).setToken(this.#clientToken);
 
@@ -103,8 +103,8 @@ export class CommandClient {
                 ? Routes.applicationCommands(currentUser.id)
                 : Routes.applicationGuildCommands(currentUser.id, this.#localGuildId)
 
-            // await rest.put(endpoint, { body: [] })
-            //     .catch(console.error);
+            await rest.put(endpoint, { body: [] })
+                .catch(console.error);
 
             await rest.put(endpoint, { body })
 
@@ -149,7 +149,6 @@ export class CommandCategory {
 
     public addCommand(command: Command) : CommandCategory {
         this.#commands.push(command);
-
         return this;
     }
 }

@@ -1,13 +1,14 @@
 {
   "name": "tscmdhandler",
-  "version": "0.1.3",
+  "version": "2.0.0",
   "description": "A command handler for Discord.JS made from Typescript.",
   "main": "dist/index.js",
   "scripts": {
     "buildpublish": "npm run build && npm publish",
     "build": "tsc",
     "lint": "tslint -c tslint.json -p tsconfig.json",
-    "lintfix": "tslint -c tslint.json -p tsconfig.json --fix"
+    "lintfix": "tslint -c tslint.json -p tsconfig.json --fix",
+    "test": "npx ts-node test/index.ts"
   },
   "repository": {
     "type": "git",
@@ -42,6 +43,7 @@
     "typescript": "^4.9.5"
   },
   "devDependencies": {
-    "@types/ms": "^0.7.31"
+    "@types/ms": "^0.7.31",
+    "ts-node": "^10.9.1"
   }
 }
