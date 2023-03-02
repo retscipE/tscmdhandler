@@ -1,4 +1,4 @@
-import { Client, REST, Routes, APIUser, Collection } from "discord.js";
+import { Client, REST, Routes, APIUser, Collection, PermissionsString } from "discord.js";
 import { Command, CommandMeta, CommandExec } from "../types";
 import ms from 'ms'
 
@@ -9,17 +9,20 @@ export class CommandClient {
     #ownerUserIds: string[];
     #cooldown = new Collection<string, number>();
     #commands: Command[] = [];
+    #noPermissionMsg: string = "You do not have the required permissions to use this command."
     
     constructor(options: {
         discordClient: Client,
         clientToken: string,
-        localGuildId: string
-        ownerUserIds: string[]
+        localGuildId: string,
+        ownerUserIds: string[],
+        noPermissionMsg?: string,
     }) {
         this.#client = options.discordClient;
         this.#localGuildId = options.localGuildId;
         this.#clientToken = options.clientToken;
         this.#ownerUserIds = options.ownerUserIds;
+        if (options.noPermissionMsg) this.#noPermissionMsg = options.noPermissionMsg;
     }
 
     /**
@@ -39,7 +42,13 @@ export class CommandClient {
 
                 if (!command) throw new Error("Command not found.")
 
-                if (command.ownerOnly === true && !this.#ownerUserIds.includes(interaction.user.id)) {
+                const member = await interaction.guild!.members.fetch({ user: interaction.user })
+
+                if (command.permissions) {
+                    if (!member.permissions.toArray().some(perm => command.permissions?.includes(perm))) 
+                        interaction.reply({ content: this.#noPermissionMsg, ephemeral: true })
+                        return;
+                } else if (command.ownerOnly === true && !this.#ownerUserIds.includes(interaction.user.id)) {
                     interaction.reply({
                         content: "Only the bot owners can use this command.",
                         ephemeral: true,
@@ -88,7 +97,7 @@ export class CommandClient {
      * @param categories 
      * @param global 
      */
-    public async registerCategories(categories: CommandCategory[], global: "true" | "false"): Promise<CommandCategory[]> {
+    public async registerCategories(categories: CommandCategory[], global: boolean): Promise<CommandCategory[]> {
         const mappedCommands = categories.map(({ commands }) => commands).flat();
         const body = mappedCommands.map((c) => c.meta);
 
@@ -99,7 +108,7 @@ export class CommandClient {
         (async () => {
             const currentUser = await rest.get(Routes.user()) as APIUser
 
-            const endpoint = global === "true"
+            const endpoint = global === true
                 ? Routes.applicationCommands(currentUser.id)
                 : Routes.applicationGuildCommands(currentUser.id, this.#localGuildId)
 
@@ -111,7 +120,7 @@ export class CommandClient {
             return currentUser
         })()
         .then((user) => {
-            const response = global === "true"
+            const response = global === true
                 ? `Successfully registered commands and categories globally with ${user.username}#${user.discriminator} (${user.id})`
                 : `Successfully registered commands and categories locally with ${user.username}#${user.discriminator} (${user.id}) in guild: ${this.#localGuildId}`
 
@@ -156,12 +165,14 @@ export class CommandCategory {
 export function createCommand(
     meta: CommandMeta,
     exec: CommandExec,
+    permissions?: PermissionsString[],
     cooldown?: number,
     ownerOnly?: boolean): 
 Command {
     return {
         meta,
         exec,
+        permissions,
         cooldown,
         ownerOnly
     }

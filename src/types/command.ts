@@ -1,4 +1,11 @@
-import { Awaitable, ChatInputCommandInteraction, Client, SlashCommandBuilder, SlashCommandSubcommandsOnlyBuilder } from "discord.js"
+import { 
+    Awaitable, 
+    ChatInputCommandInteraction, 
+    Client, 
+    SlashCommandBuilder, 
+    SlashCommandSubcommandsOnlyBuilder,
+    PermissionsString 
+} from "discord.js"
 
 export interface CommandProps {
     interaction: ChatInputCommandInteraction
@@ -14,6 +21,7 @@ export type CommandMeta =
 export interface Command {
     meta: CommandMeta
     exec: CommandExec
+    permissions?: PermissionsString[]
     cooldown?: number
     ownerOnly?: boolean
 }

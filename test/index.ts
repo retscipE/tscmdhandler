@@ -25,7 +25,8 @@ const cmd = createCommand(
     meta,
     ({ interaction, client }) => {
         interaction.reply({ content: `Pong! ${client.ws.ping}ms.` })
-    }
+    },
+    ["Administrator"]
 )
 
 test
@@ -34,4 +35,4 @@ test
 
 client.registerCategories([
     test
-], "false")
+], false)

@@ -31,7 +31,8 @@ const client = new CommandClient({
     discordClient: djsClient,
     clientToken: process.env.TOKEN,
     localGuildId: "961227373649461248",
-    ownerUserIds: ["544646066579046401"]
+    ownerUserIds: ["544646066579046401"],
+    noPermissionMsg: "Haha you don't have enough permissions loser!" // Default: "You do not have the required permissions to use this command."
 })
 
 (async() => {
@@ -85,7 +86,7 @@ const meta = new SlashCommandBuilder()
 
 export default createCommand(meta, ({ interaction, client }) => {
     interaction.reply({ content: `It works!` })
-})
+}, ["Administrator"])
 ```
 
 ### You can do almost anything in the commands, this just shows how to setup the commands and use them. Also it is not required to make an event to process the commands as that has already been done within the package.
