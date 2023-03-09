@@ -46,9 +46,11 @@ export class MongoClient {
         }
     }
 
-    public registerSchemas(schemas: MongoSchema[]) : void {
+    public async registerSchemas(schemas: MongoSchema[]) : Promise<MongoSchema[]> {
         schemas.forEach((schema) => {
             this.#connection.model(schema.name, schema.schemaObj, schema.name);
         });
+
+        return schemas;
     }
 }

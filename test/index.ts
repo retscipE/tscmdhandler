@@ -45,7 +45,7 @@ test
             test
         ], false);
     await client.run();
-    mongoClient.registerSchemas([
+    await mongoClient.registerSchemas([
         mongoClient.createSchema("test", new mongoose.Schema({
             name: String,
             age: Number
