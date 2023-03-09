@@ -1,5 +1,6 @@
 import { Client, REST, Routes, APIUser, Collection, PermissionsString } from "discord.js";
 import { Command, CommandMeta, CommandExec } from "../types";
+import { MongoClient } from './MongoClient'
 import ms from 'ms'
 
 export class CommandClient {
@@ -10,19 +11,22 @@ export class CommandClient {
     #cooldown = new Collection<string, number>();
     #commands: Command[] = [];
     #noPermissionMsg: string = "You do not have the required permissions to use this command."
+    #mongoUri: string | undefined;
     
     constructor(options: {
-        discordClient: Client,
+        djsClient: Client,
         clientToken: string,
         localGuildId: string,
         ownerUserIds: string[],
         noPermissionMsg?: string,
+        mongoClient?: MongoClient,
     }) {
-        this.#client = options.discordClient;
+        this.#client = options.djsClient;
         this.#localGuildId = options.localGuildId;
         this.#clientToken = options.clientToken;
         this.#ownerUserIds = options.ownerUserIds;
-        if (options.noPermissionMsg) this.#noPermissionMsg = options.noPermissionMsg;
+        if (options.noPermissionMsg !== undefined) this.#noPermissionMsg = options.noPermissionMsg;
+        if (options.mongoClient !== undefined) this.#mongoUri = options.mongoClient.uri;
     }
 
     /**
@@ -167,8 +171,7 @@ export function createCommand(
     exec: CommandExec,
     permissions?: PermissionsString[],
     cooldown?: number,
-    ownerOnly?: boolean): 
-Command {
+    ownerOnly?: boolean): Command {
     return {
         meta,
         exec,

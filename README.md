@@ -16,8 +16,9 @@ import { config } from "dotenv";
 import { resolve } from "path";
 config({ path: resolve(__dirname, "..", ".env") });
 
-import { CommandClient } from 'tshandler'
+import { CommandClient, MongoClient } from 'tshandler'
 import { Client } from 'discord.js'
+import mongoose from './mongoose'
 import categories from './commands'
 
 const djsClient = new Client({
@@ -27,17 +28,31 @@ const djsClient = new Client({
     ]
 })
 
+const mongoClient = new MongoClient({
+    uri: process.env.MONGOURI
+})
+
 const client = new CommandClient({
-    discordClient: djsClient,
+    djsClient,
     clientToken: process.env.TOKEN,
     localGuildId: "961227373649461248",
     ownerUserIds: ["544646066579046401"],
-    noPermissionMsg: "Haha you don't have enough permissions loser!" // Default: "You do not have the required permissions to use this command."
+    noPermissionMsg: "Haha you don't have enough permissions loser!", // Default: "You do not have the required permissions to use this command."
+    mongoClient
 })
 
+const schema = mongoClient.createSchema("users", new mongoose.Schema({
+    name: String,
+    age: Number
+}))
+
 (async() => {
-    await client.registerCategories(categories)
-    await client.run()
+    await client.registerCategories(categories);
+    await client.run();
+    await mongoClient.registerSchemas([
+        schema
+    ])
+    await mongoClient.initialize();
 })()
 
 // ./commands/index.ts

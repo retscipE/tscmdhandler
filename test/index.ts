@@ -1,15 +1,21 @@
 import { Client, SlashCommandBuilder } from 'discord.js'
-import { CommandCategory, CommandClient, createCommand } from '../src'
+import mongoose from 'mongoose'
+import { CommandCategory, CommandClient, createCommand, MongoClient } from '../src'
 
 const djsClient = new Client({
     intents: []
 })
 
+const mongoClient = new MongoClient({
+    uri: "mongodb://localhost:27017"
+})
+
 const client = new CommandClient({
-    discordClient: djsClient,
+    djsClient,
     clientToken: "eefgrefewfw",
     localGuildId: "12323354354325",
-    ownerUserIds: ["12345678910"]
+    ownerUserIds: ["12345678910"],
+    mongoClient
 })
 
 const test = new CommandCategory({
@@ -30,9 +36,20 @@ const cmd = createCommand(
 )
 
 test
-    .addCommand(cmd)
+    .addCommand(cmd);
 
 
-client.registerCategories([
-    test
-], false)
+(async () => {
+    await client
+        .registerCategories([
+            test
+        ], false);
+    await client.run();
+    mongoClient.registerSchemas([
+        mongoClient.createSchema("test", new mongoose.Schema({
+            name: String,
+            age: Number
+        }))
+    ])
+    await mongoClient.initialize();
+})();
